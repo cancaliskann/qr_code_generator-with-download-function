@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>qr_code</title>
@@ -9,24 +8,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Madimi+One&display=swap" rel="stylesheet">
-
 </head>
 <body>
     
 <div class="container">
     <p> Please enter your text or URL </p>
-
     <input type="text" id="qrText" placeholder="Text or URL">
-
     <div id="imgBox"> 
         <img src="" id="qrImage">
     </div>
-
     <button onclick="generateQR()"> Generate QR Code </button>
-
-
     <button id="downloadButton" style="display: none;" onclick="downloadQR()"> Download QR Code </button>
-
 </div>    
 
 <script>
@@ -41,12 +33,14 @@ function generateQR() {
         imgBox.classList.add("show-img");
         qrText.classList.remove("error");
         container.classList.remove("error-border");
-
-        downloadButton.style.display = "block";
+        downloadButton.style.display = "block"; 
     } else {
         qrText.classList.add("error");
         container.classList.add("error-border");
-        setTimeout(()=>{
+        downloadButton.style.display = "none"; 
+        qrImage.src = ""; 
+        imgBox.classList.remove("show-img"); 
+        setTimeout(() => {
             qrText.classList.remove("error");
         }, 1000);
     }
@@ -60,11 +54,7 @@ function downloadQR() {
                 let link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
                 link.download = 'qr_code.png';
-
-                
                 link.click();
-
-                
                 URL.revokeObjectURL(link.href);
             })
             .catch(error => console.error('Error generating QR code:', error));
@@ -73,6 +63,11 @@ function downloadQR() {
     }
 }
 
+qrText.addEventListener("keypress", function(event) {
+    if (event.keyCode === 13) { 
+        generateQR();
+    }
+});
 </script>
 
 </body>
