@@ -7,40 +7,42 @@
     <title>qr_code</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Madimi+One&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Madimi+One&display=swap" rel="stylesheet">
 
 </head>
 <body>
     
 <div class="container">
-    <p> Please enter your text or Url </p>
+    <p> Please enter your text or URL </p>
 
-    <input type="text" id="qrText" placeholder="Text or Url">
+    <input type="text" id="qrText" placeholder="Text or URL">
 
     <div id="imgBox"> 
         <img src="" id="qrImage">
-
     </div>
 
     <button onclick="generateQR()"> Generate QR Code </button>
 
-    
 
+    <button id="downloadButton" style="display: none;" onclick="downloadQR()"> Download QR Code </button>
 
 </div>    
-<script>
 
+<script>
 let qrImage = document.getElementById("qrImage");
 let qrText = document.getElementById("qrText");
+let downloadButton = document.getElementById("downloadButton");
 
-
-function generateQR(){
-    if(qrText.value.length > 0){ 
+function generateQR() {
+    let container = document.querySelector(".container");
+    if (qrText.value.length > 0) { 
         qrImage.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + qrText.value;
         imgBox.classList.add("show-img");
         qrText.classList.remove("error");
         container.classList.remove("error-border");
+
+        downloadButton.style.display = "block";
     } else {
         qrText.classList.add("error");
         container.classList.add("error-border");
@@ -50,8 +52,28 @@ function generateQR(){
     }
 }
 
-</script>
+function downloadQR() {
+    if (qrText.value.length > 0) {
+        fetch("https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + qrText.value)
+            .then(response => response.blob())
+            .then(blob => {
+                let link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'qr_code.png';
 
+                
+                link.click();
+
+                
+                URL.revokeObjectURL(link.href);
+            })
+            .catch(error => console.error('Error generating QR code:', error));
+    } else {
+        console.error('Please enter text or URL');
+    }
+}
+
+</script>
 
 </body>
 </html>
